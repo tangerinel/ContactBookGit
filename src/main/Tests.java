@@ -1,3 +1,5 @@
+package main;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -12,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * A classe Tests especifica um conjunto de testes implementado recorrendo à ferramenta 
+ * A classe main.Tests especifica um conjunto de testes implementado recorrendo à ferramenta
  * JUnit. Estes testes usam como input os ficheiros de teste do Mooshak, gerando, como
  * output, o resultado esperado na execução desses testes.
  * A classe está implementada para os testes do problema do contactBook.ContactBook, a usar na primeira
@@ -72,7 +74,7 @@ public class Tests {
         try {
             Locale.setDefault(Locale.US);
             System.setIn(new FileInputStream(input));
-            Class<?> mainClass = Class.forName("Main");
+            Class<?> mainClass = Class.forName("main.Main");
             mainClass.getMethod("main", String[].class).invoke(null, new Object[] { new String[0] });
         } catch (Exception e) {
             e.printStackTrace();

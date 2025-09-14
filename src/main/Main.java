@@ -1,3 +1,5 @@
+package main;
+
 import contactBook.Contact;
 import contactBook.ContactBook;
 
@@ -33,7 +35,7 @@ public class Main {
         ContactBook cBook = new ContactBook();
         String comm = getCommand(in);
 
-        while (!comm.equals(QUIT)) {
+        while (!QUIT.equals(comm)) {
             switch (comm) {
                 case ADD_CONTACT:
                     addContact(in, cBook);
