@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 
 public class Main {
-    //Constantes que definem os comandos
+    // Constants that define commands
     public static final String ADD_CONTACT = "AC";
     public static final String REMOVE_CONTACT = "RC";
     public static final String GET_PHONE = "GP";
@@ -19,7 +19,7 @@ public class Main {
     public static final String LIST_CONTACTS = "LC";
     public static final String QUIT = "Q";
 
-    //Constantes que definem as mensagens para o utilizador
+    // Constants that define messages for the user
     public static final String CONTACT_EXISTS = "contactBook.Contact already exists.";
     public static final String NAME_NOT_EXIST = "contactBook.Contact does not exist.";
     public static final String CONTACT_ADDED = "contactBook.Contact added.";
