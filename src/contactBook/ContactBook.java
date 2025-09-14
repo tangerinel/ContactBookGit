@@ -1,5 +1,10 @@
 package contactBook;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class ContactBook {
     static final int DEFAULT_SIZE = 100;
 
@@ -59,11 +64,28 @@ public class ContactBook {
     }
 
     public String getByPhone( int phone) {
-        int index = searchIndexByPhone(phone);
+        List<Integer> indexes = searchIndexByPhone(phone);
+        if (indexes.isEmpty()) {
+            return null;
+        }
+        int theOldestIndex = indexes.getFirst();
 
-        if(index == -1) return null;
+        return contacts[theOldestIndex].getName();
+    }
 
-        return contacts[index].getName();
+    public boolean hasDuplicatedPhone() {
+        if (counter <= 1) {
+            return false;
+        }
+        Set<Integer> phones = HashSet.newHashSet(counter);
+
+        for (Contact c : contacts) {
+            if (c != null && !phones.add(c.getPhone())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private int searchIndex(String name) {
@@ -79,24 +101,22 @@ public class ContactBook {
         return result;
     }
 
-    private int searchIndexByPhone(int phone) {
-        int i = 0;
-        int result = -1;
-        boolean found = false;
-        while (i<counter && !found)
-            if (contacts[i].getPhone() == phone)
-                found = true;
-            else
-                i++;
-        if (found) result = i;
+    private List<Integer> searchIndexByPhone(int phone) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < counter; i++) {
+            if (contacts[i].getPhone() == phone) {
+                result.add(i);
+            }
+        }
         return result;
     }
 
 
     private void resize() {
-        Contact tmp[] = new Contact[2*contacts.length];
-        for (int i=0;i<counter; i++)
-            tmp[i] = contacts[i];
+        Contact[] tmp = new Contact[2*contacts.length];
+        if (counter >= 0) {
+            System.arraycopy(contacts, 0, tmp, 0, counter);
+        }
         contacts = tmp;
     }
 

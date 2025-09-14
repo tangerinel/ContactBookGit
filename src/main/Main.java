@@ -17,6 +17,7 @@ public class Main {
     public static final String SET_PHONE = "SP";
     public static final String SET_EMAIL = "SE";
     public static final String LIST_CONTACTS = "LC";
+    public static final String HAS_DUPLICATES = "EP";
     public static final String QUIT = "Q";
 
     // Constants that define messages for the user
@@ -29,6 +30,8 @@ public class Main {
     public static final String PHONE_NOT_EXIST = "Phone number does not exist.";
     public static final String QUIT_MSG = "Goodbye!";
     public static final String COMMAND_ERROR = "Unknown command.";
+    public static final String NO_DUPLICATES_EXIST = "All contacts have different phone numbers.";
+    public static final String DUPLICATES_EXIST = "There are contacts that share phone numbers.";
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
@@ -37,32 +40,16 @@ public class Main {
 
         while (!QUIT.equals(comm)) {
             switch (comm) {
-                case ADD_CONTACT:
-                    addContact(in, cBook);
-                    break;
-                case REMOVE_CONTACT:
-                    deleteContact(in, cBook);
-                    break;
-                case GET_PHONE:
-                    getPhone(in, cBook);
-                    break;
-                case GET_EMAIL:
-                    getEmail(in, cBook);
-                    break;
-                case SET_PHONE:
-                    setPhone(in, cBook);
-                    break;
-                case SET_EMAIL:
-                    setEmail(in, cBook);
-                    break;
-                case LIST_CONTACTS:
-                    listAllContacts(cBook);
-                    break;
-                case GET_BY_PHONE:
-                    getByPhone(in, cBook);
-                    break;
-                default:
-                    System.out.println(COMMAND_ERROR);
+                case ADD_CONTACT ->  addContact(in, cBook);
+                case REMOVE_CONTACT -> deleteContact(in, cBook);
+                case GET_PHONE -> getPhone(in, cBook);
+                case GET_EMAIL -> getEmail(in, cBook);
+                case SET_PHONE -> setPhone(in, cBook);
+                case SET_EMAIL -> setEmail(in, cBook);
+                case LIST_CONTACTS -> listAllContacts(cBook);
+                case GET_BY_PHONE -> getByPhone(in, cBook);
+                case HAS_DUPLICATES -> hasDuplicates(cBook);
+                default -> System.out.println(COMMAND_ERROR);
             }
             System.out.println();
             comm = getCommand(in);
@@ -99,6 +86,13 @@ public class Main {
         phone = in.nextInt();
         in.nextLine();
         System.out.println(Objects.requireNonNullElse(cBook.getByPhone(phone), PHONE_NOT_EXIST));
+    }
+
+    private static void hasDuplicates(ContactBook cBook) {
+        String output = cBook.hasDuplicatedPhone()
+                ? DUPLICATES_EXIST
+                : NO_DUPLICATES_EXIST;
+        System.out.println(output);
     }
 
     private static void deleteContact(Scanner in, ContactBook cBook) {
