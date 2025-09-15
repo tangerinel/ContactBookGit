@@ -1,9 +1,8 @@
 package contactBook;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class ContactBook {
     static final int DEFAULT_SIZE = 100;
@@ -11,11 +10,13 @@ public class ContactBook {
     private int counter;
     private Contact[] contacts;
     private int currentContact;
+    private HashMap<Integer, Integer> phoneNbyUsesN;
 
     public ContactBook() {
         counter = 0;
         contacts = new Contact[DEFAULT_SIZE];
         currentContact = -1;
+        phoneNbyUsesN = new HashMap<>();
     }
 
     //Pre: name != null
@@ -33,14 +34,17 @@ public class ContactBook {
             resize();
         contacts[counter] = new Contact(name, phone, email);
         counter++;
+        increasePhoneUses(phone);
     }
 
     //Pre: name != null && hasContact(name)
     public void deleteContact(String name) {
         int index = searchIndex(name);
+        int phonetmp = contacts[index].getPhone();
         for(int i=index; i<counter; i++)
             contacts[i] = contacts[i+1];
         counter--;
+        decreasePhoneUses(phonetmp);
     }
 
     //Pre: name != null && hasContact(name)
@@ -55,7 +59,10 @@ public class ContactBook {
 
     //Pre: name != null && hasContact(name)
     public void setPhone(String name, int phone) {
+        int oldPhone = contacts[searchIndex(name)].getPhone();
+        decreasePhoneUses(oldPhone);
         contacts[searchIndex(name)].setPhone(phone);
+        increasePhoneUses(phone);
     }
 
     //Pre: name != null && hasContact(name)
@@ -63,28 +70,20 @@ public class ContactBook {
         contacts[searchIndex(name)].setEmail(email);
     }
 
-    public String getByPhone( int phone) {
+    public String getByPhone(int phone) {
         List<Integer> indexes = searchIndexByPhone(phone);
         if (indexes.isEmpty()) {
             return null;
         }
-        int theOldestIndex = indexes.getFirst();
+        int theOldestIndex = indexes.get(0);
 
         return contacts[theOldestIndex].getName();
     }
 
     public boolean hasDuplicatedPhone() {
-        if (counter <= 1) {
-            return false;
+        for(int i : phoneNbyUsesN.values()){
+            if(i > 1) return true;
         }
-        Set<Integer> phones = HashSet.newHashSet(counter);
-
-        for (Contact c : contacts) {
-            if (c != null && !phones.add(c.getPhone())) {
-                return true;
-            }
-        }
-
         return false;
     }
 
@@ -131,6 +130,27 @@ public class ContactBook {
     //Pre: hasNext()
     public Contact next() {
         return contacts[currentContact++];
+    }
+
+
+    private void decreasePhoneUses(int phonetmp ) {
+        if(phoneNbyUsesN.containsKey(phonetmp)) {
+            int uses = phoneNbyUsesN.get(phonetmp);
+            if (uses == 1) {
+                phoneNbyUsesN.remove(phonetmp);
+            } else {
+                phoneNbyUsesN.put(phonetmp, uses - 1);
+            }
+        }
+    }
+
+    private void increasePhoneUses(int phone) {
+        if(phoneNbyUsesN.containsKey(phone)) {
+            int uses = phoneNbyUsesN.get(phone);
+            phoneNbyUsesN.put(phone, uses + 1);
+        } else {
+            phoneNbyUsesN.put(phone, 1);
+        }
     }
 
 }
