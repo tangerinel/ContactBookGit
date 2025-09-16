@@ -11,12 +11,16 @@ public class ContactBook {
     private Contact[] contacts;
     private int currentContact;
     private HashMap<Integer, Integer> phoneNbyUsesN;
+    private static Integer ONE;
+    private static Integer MINUS_ONE;
 
     public ContactBook() {
         counter = 0;
         contacts = new Contact[DEFAULT_SIZE];
         currentContact = -1;
         phoneNbyUsesN = new HashMap<>();
+        ONE = 1;
+        MINUS_ONE = -1;
     }
 
     //Pre: name != null
@@ -34,7 +38,7 @@ public class ContactBook {
             resize();
         contacts[counter] = new Contact(name, phone, email);
         counter++;
-        increasePhoneUses(phone);
+        decreaseIncreseUses(phone, ONE);
     }
 
     //Pre: name != null && hasContact(name)
@@ -44,7 +48,7 @@ public class ContactBook {
         for(int i=index; i<counter; i++)
             contacts[i] = contacts[i+1];
         counter--;
-        decreasePhoneUses(phonetmp);
+        decreaseIncreseUses(phonetmp, MINUS_ONE);
     }
 
     //Pre: name != null && hasContact(name)
@@ -60,9 +64,9 @@ public class ContactBook {
     //Pre: name != null && hasContact(name)
     public void setPhone(String name, int phone) {
         int oldPhone = contacts[searchIndex(name)].getPhone();
-        decreasePhoneUses(oldPhone);
+        decreaseIncreseUses(oldPhone, MINUS_ONE);
         contacts[searchIndex(name)].setPhone(phone);
-        increasePhoneUses(phone);
+        decreaseIncreseUses(phone, ONE);
     }
 
     //Pre: name != null && hasContact(name)
@@ -132,25 +136,17 @@ public class ContactBook {
         return contacts[currentContact++];
     }
 
-
-    private void decreasePhoneUses(int phonetmp ) {
-        if(phoneNbyUsesN.containsKey(phonetmp)) {
-            int uses = phoneNbyUsesN.get(phonetmp);
-            if (uses == 1) {
-                phoneNbyUsesN.remove(phonetmp);
-            } else {
-                phoneNbyUsesN.put(phonetmp, uses - 1);
-            }
-        }
-    }
-
-    private void increasePhoneUses(int phone) {
+    private void decreaseIncreseUses(int phone, int delta) {
         if(phoneNbyUsesN.containsKey(phone)) {
             int uses = phoneNbyUsesN.get(phone);
-            phoneNbyUsesN.put(phone, uses + 1);
+            if(uses + delta <= 0) {
+                phoneNbyUsesN.remove(phone);
+            }
+            phoneNbyUsesN.put(phone, uses + delta);
         } else {
-            phoneNbyUsesN.put(phone, 1);
+            phoneNbyUsesN.put(phone, delta);
         }
     }
+
 
 }
